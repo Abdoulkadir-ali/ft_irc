@@ -1,0 +1,13 @@
+# Build output
+ircserv
+objs/
+
+# Dependency files
+**/*.d
+
+# Editor / OS
+.vscode/
+.DS_Store
+*.swp
+*.swo
+*~

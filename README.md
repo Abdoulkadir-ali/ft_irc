@@ -18,19 +18,22 @@ Voici comment les flux réseaux et les commandes logiques sont orchestrés au se
 
 ```mermaid
 graph TD
-    Client1["🔌 Client 1 (irssi/nc)"] <--->|Socket TCP| Poll["🔄 Boucle poll() (Multiplexeur)"]
-    Client2["🔌 Client 2 (HexChat)"] <--->|Socket TCP| Poll
-    Bot["🤖 IRCBot (Intégré)"] <--->|socketpair() local| Poll
-    
-    Poll -->|Nouvelle connexion| Accept["🤝 accept() -> Nouveau Client"]
-    Poll -->|Données reçues| Parser["📝 Parser & Tokenizer (Lignes \r\n)"]
-    
-    Parser -->|Message Tokenisé| Dispatcher["🎯 Command Dispatcher"]
-    
-    Dispatcher -->|PASS / NICK / USER / CAP| Reg["🔑 Séquence d'Authentification"]
-    Dispatcher -->|JOIN / PART / TOPIC / KICK / INVITE| Chan["💬 Gestion des Canaux & Privilèges"]
-    Dispatcher -->|PRIVMSG / NOTICE| Msg["✉️ Routage de la Messagerie"]
-    Dispatcher -->|MODE +i / +t / +k / +o / +l| Mode["🛡️ Contrôle des Modes de Salons"]
+    Client1["Client 1 - irssi/nc"] -->|Socket TCP| Poll
+    Poll -->|Socket TCP| Client1
+    Client2["Client 2 - HexChat"] -->|Socket TCP| Poll
+    Poll -->|Socket TCP| Client2
+    Bot["IRCBot - Integre"] -->|socketpair local| Poll
+    Poll -->|socketpair local| Bot
+
+    Poll["Boucle poll - Multiplexeur"] -->|Nouvelle connexion| Accept["accept - Nouveau Client"]
+    Poll -->|Donnees recues| Parser["Parser et Tokenizer"]
+
+    Parser -->|Message Tokenise| Dispatcher["Command Dispatcher"]
+
+    Dispatcher -->|PASS / NICK / USER / CAP| Reg["Authentification"]
+    Dispatcher -->|JOIN / PART / TOPIC / KICK / INVITE| Chan["Canaux et Privileges"]
+    Dispatcher -->|PRIVMSG / NOTICE| Msg["Routage Messagerie"]
+    Dispatcher -->|MODE i t k o l| Mode["Modes de Salons"]
 ```
 
 ---
